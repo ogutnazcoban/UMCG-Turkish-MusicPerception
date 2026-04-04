@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>2B Değerlendirme Testi — Makam & Aksak</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
+
+  <!-- local jsPsych -->
+  <link href="jspsych/css/jspsych.css" rel="stylesheet" />
+  <script src="jspsych/dist/jspsych.js"></script>
+  <script src="jspsych/plugins/plugin-preload.js"></script>
+  <script src="jspsych/plugins/plugin-html-button-response.js"></script>
+  <script src="jspsych/plugins/plugin-audio-button-response.js"></script>
+  <script src="jspsych/plugins/plugin-survey-html-form.js"></script>
+
+  <style>
+    :root {
+      --bg:      #f0f7ff;
+      --card:    #ffffff;
+      --a1:      #3b82f6;
+      --a2:      #f59e0b;
+      --a3:      #10b981;
+      --a4:      #8b5cf6;
+      --text:    #1e2a4a;
+      --muted:   #64748b;
+      --radius:  22px;
+      --shadow:  0 10px 40px rgba(59,130,246,0.13);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; min-height: 100%;
+      background: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.15;
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
+      width: 700px; height: 700px;
+      background: var(--a1);
+      top: -250px; left: -250px;
+      animation: blobA 14s ease-in-out infinite alternate;
+    }
+    body::after {
+      width: 550px; height: 550px;
+      background: var(--a4);
+      bottom: -180px; right: -180px;
+      animation: blobB 16s ease-in-out infinite alternate;
+    }
+    @keyframes blobA { to { transform: translate(90px, 70px) scale(1.12); } }
+    @keyframes blobB { to { transform: translate(-70px, -50px) scale(1.18); } }
+
+    #jspsych-target {
+      position: relative; z-index: 1;
+      width: 100%; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .jspsych-content-wrapper {
+      width: 100% !important;
+      max-width: 860px !important;
+      margin: 0 auto !important;
+    }
+    .jspsych-content {
+      max-width: 100% !important;
+      width: 100% !important;
+      text-align: center;
+    }
+
+    /* ── card ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 44px 50px;
+      animation: fadeUp .45s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(30px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── typography ── */
+    .display {
+      font-family: 'Righteous', cursive;
+      font-size: 2.3rem;
+      color: var(--a1);
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 26px;
+    }
+
+    /* ── jsPsych button ── */
+    .jspsych-btn {
+      font-family: 'Nunito', sans-serif !important;
+      font-size: 1.1rem !important;
+      font-weight: 800 !important;
+      background: var(--a1) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 50px !important;
+      padding: 14px 42px !important;
+      cursor: pointer !important;
+      transition: transform .15s, box-shadow .15s !important;
+      box-shadow: 0 4px 20px rgba(59,130,246,.35) !important;
+      margin-top: 26px !important;
+    }
+    .jspsych-btn:hover:enabled {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 30px rgba(59,130,246,.45) !important;
+    }
+    .jspsych-btn:disabled {
+      background: #bfdbfe !important;
+      color: #e0eeff !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /* ── info grid ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    .info-card {
+      background: #eff6ff;
+      border: 2px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 18px 20px;
+    }
+    .info-card .ic-icon  { font-size: 1.9rem; margin-bottom: 8px; }
+    .info-card .ic-title { font-weight: 800; color: var(--a1); margin-bottom: 5px; font-size: .95rem; }
+    .info-card .ic-body  { font-size: .88rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── part badge ── */
+    .part-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--a1), var(--a4));
+      color: #fff;
+      border-radius: 50px;
+      padding: 6px 22px;
+      font-size: .88rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    /* ── tip box ── */
+    .tip-box {
+      background: #f0fdf4;
+      border: 2px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 14px 20px;
+      font-size: .9rem;
+      color: #14532d;
+      font-weight: 600;
+      margin: 20px 0 0;
+      text-align: left;
+    }
+
+    /* ── step rows ── */
+    .practice-steps {
+      display: flex; flex-direction: column; gap: 12px;
+      text-align: left; margin: 22px 0;
+    }
+    .step-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: #eff6ff;
+      border: 2px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 15px 18px;
+    }
+    .step-num {
+      min-width: 30px; height: 30px;
+      background: var(--a1); color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: .9rem;
+      flex-shrink: 0;
+    }
+    .step-text { font-size: .92rem; line-height: 1.55; color: var(--text); }
+    .step-text b { color: var(--a1); }
+
+    /* ── axis cards ── */
+    .axis-grid {
+      display: flex; gap: 20px; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 22px;
+    }
+    .axis-card {
+      border-radius: 16px;
+      padding: 18px 22px;
+      max-width: 265px;
+      text-align: left;
+      flex: 1; min-width: 220px;
+    }
+    .axis-card.valence {
+      background: #fff7ed; border: 2px solid #fed7aa;
+    }
+    .axis-card.arousal {
+      background: #f5f3ff; border: 2px solid #ddd6fe;
+    }
+    .axis-card .ax-icon  { font-size: 1.8rem; margin-bottom: 6px; }
+    .axis-card .ax-title { font-size: .95rem; font-weight: 800; margin-bottom: 8px; }
+    .axis-card.valence .ax-title { color: #92400e; }
+    .axis-card.arousal .ax-title { color: #4c1d95; }
+    .axis-card .ax-body  { font-size: .85rem; line-height: 1.6; }
+    .axis-card.valence .ax-body { color: #78350f; }
+    .axis-card.arousal .ax-body { color: #3b0764; }
+
+    /* ── practice pad wrapper ── */
+    .practice-wrap {
+      background: #f8fafc;
+      border: 2px dashed #94a3b8;
+      border-radius: 18px;
+      padding: 18px 22px;
+      margin: 0 auto 18px;
+      max-width: 560px;
+    }
+    .practice-wrap .pw-title {
+      font-size: .9rem; font-weight: 800;
+      color: var(--a1); margin-bottom: 12px;
+    }
+    #practice-pad {
+      border-radius: 14px;
+      border: 2px solid #cbd5e0;
+      touch-action: none;
+      cursor: crosshair;
+      display: block; margin: 0 auto;
+      max-width: 100%;
+    }
+    #practice-label {
+      font-size: .85rem; color: var(--muted);
+      font-weight: 700; min-height: 20px;
+      margin-top: 8px; text-align: center;
+    }
+
+    /* ── audio status ── */
+    .audio-status {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px;
+      background: #fff7ed;
+      border: 2px solid #fed7aa;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-weight: 700; color: #92400e;
+      font-size: .92rem;
+      margin: 0 auto 20px;
+      width: fit-content;
+      transition: background .3s, border-color .3s, color .3s;
+    }
+    .audio-status.done {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #14532d;
+    }
+    .wave {
+      display: flex; gap: 3px; align-items: flex-end; height: 20px;
+    }
+    .wave span {
+      display: block; width: 4px; border-radius: 2px;
+      background: #f97316;
+      animation: wave .7s ease-in-out infinite alternate;
+    }
+    .wave span:nth-child(2) { animation-delay:.12s; }
+    .wave span:nth-child(3) { animation-delay:.24s; }
+    .wave span:nth-child(4) { animation-delay:.36s; }
+    .wave span:nth-child(5) { animation-delay:.48s; }
+    @keyframes wave { from{height:4px} to{height:18px} }
+
+    /* ── canvas rating pad ── */
+    .pad-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+    }
+    #rating-pad {
+      border-radius: 18px;
+      border: 2px solid #cbd5e0;
+      touch-action: none;
+      cursor: crosshair;
+      max-width: 100%;
+    }
+    .pad-note {
+      font-size: .85rem; color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* ── form ── */
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 18px; text-align: left; margin: 24px 0;
+    }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { font-size: .9rem; font-weight: 700; color: var(--text); }
+    .form-field input {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      padding: 10px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: #f8faff;
+      color: var(--text);
+      transition: border-color .2s;
+    }
+    .form-field input:focus {
+      outline: none; border-color: var(--a1); background: #fff;
+    }
+    .req { color: #ef4444; }
+
+    /* ── progress bar ── */
+    .progress-wrap {
+      width: 100%; height: 8px;
+      background: #e2e8f0; border-radius: 4px;
+      margin-bottom: 24px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--a1), var(--a4));
+      border-radius: 4px;
+      transition: width .4s ease;
+    }
+
+    /* ── abort button ── */
+    #abort-btn {
+      position: fixed; bottom: 20px; right: 20px;
+      z-index: 9999;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: #ef4444; color: #fff;
+      font-size: 17px; font-weight: 900;
+      border: 2px solid #b91c1c;
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(239,68,68,.45);
+      line-height: 1; padding: 0;
+      transition: background .15s, transform .12s;
+    }
+    #abort-btn:hover { background: #b91c1c; transform: scale(1.12); }
+
+    @media (max-width: 640px) {
+      .card { padding: 28px 18px; }
+      .info-grid, .form-grid { grid-template-columns: 1fr; }
+      .display { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Erken sonlandırma -->
+  <button id="abort-btn" title="Testi sonlandır" onclick="
+    if(confirm('Testi sonlandırmak istediğinizden emin misiniz?\nKaydedilmemiş veriler kaybolacak.')){
+      document.getElementById('abort-btn').style.display='none';
+      jsPsych.abortExperiment('Katılımcı testi erken sonlandırdı.');
+    }
+  ">✕</button>
+
+  <div id="jspsych-target"></div>
+
+<script>
+/* ── helpers ── */
+function card(inner){ return `<div class="card">${inner}</div>`; }
+
+/* ── init ── */
+const jsPsych = initJsPsych({
+  display_element: 'jspsych-target',
+  on_finish: () => {
+    const sid = jsPsych.data.get().first(1).values()[0].subject_id;
+    jsPsych.data.get().localSave('csv', `degerlendirme2B_${sid}.csv`);
+  }
+});
+const urlID = (new URLSearchParams(window.location.search)).get('id');
+const subject_id = urlID || Math.floor(Math.random()*1e6);
+jsPsych.data.addProperties({ subject_id });
+
+/* ── Katılımcı Bilgileri ── */
+const intake = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: card(`
+    <div class="display">👋 Hoş Geldiniz!</div>
+    <p class="lead">Lütfen aşağıdaki bilgileri doldurun. <span style="color:#ef4444">*</span> olan alanlar zorunludur.</p>
+  `),
+  html: `
+    <div class="form-grid">
+      <div class="form-field full">
+        <label>Ad Soyad 🖊️ <span class="req">*</span></label>
+        <input name="fullname" type="text" placeholder="Adınız ve soyadınız" required>
+      </div>
+      <div class="form-field">
+        <label>Yaş 🎂 <span class="req">*</span></label>
+        <input name="age" type="number" min="4" max="99" placeholder="ör. 12" required>
+      </div>
+      <div class="form-field">
+        <label>Cinsiyet <span class="req">*</span></label>
+        <input name="gender" type="text" placeholder="ör. Kız" required>
+      </div>
+      <div class="form-field">
+        <label>Enstrüman 🎸 <span style="color:var(--muted);font-weight:400">(isteğe bağlı)</span></label>
+        <input name="instrument" type="text" placeholder="ör. Keman">
+      </div>
+      <div class="form-field">
+        <label>Ne kadar süredir? 🎵 <span style="color:var(--muted);font-weight:400">(isteğe bağlı)</span></label>
+        <div style="display:flex;gap:10px">
+          <input name="years_playing_years"  type="number" min="0" max="30" placeholder="Yıl" style="flex:1">
+          <input name="years_playing_months" type="number" min="0" max="11" placeholder="Ay"  style="flex:1">
+        </div>
+      </div>
+    </div>
+  `,
+  button_label: 'Devam Et ➡️',
+  on_finish: d => {
+    try {
+      const r = typeof d.responses === 'string' ? JSON.parse(d.responses) : d.responses;
+      const y = Math.max(0, parseInt(r.years_playing_years ?? 0, 10));
+      const m = Math.min(11, Math.max(0, parseInt(r.years_playing_months ?? 0, 10)));
+      jsPsych.data.addProperties({
+        fullname: r.fullname, age: r.age, gender: r.gender,
+        instrument: r.instrument || "",
+        years_playing_years: y, years_playing_months: m,
+        years_playing_total: Number((y + m/12).toFixed(3))
+      });
+    } catch(e){ console.warn(e); }
+  }
+};
+
+/* ── Dosya listeleri ── */
+const makam_list = [
+  { file: 'acem asiran makam_1.wav', label: 'Acem Aşiran' },
+  { file: 'huseyni makam_1.wav',     label: 'Hüseyni' },
+  { file: 'karcigar makam_1.wav',    label: 'Karciğar' },
+  { file: 'muhayyer makam_1.wav',    label: 'Muhayyer' },
+  { file: 'nikriz makam_1.wav',      label: 'Nikrîz' },
+  { file: 'rast makam_1.wav',        label: 'Rast' },
+  { file: 'saba makam_1.wav',        label: 'Sabâ' },
+  { file: 'usak makam_1.wav',        label: 'Uşşak' }
+];
+const aksak_list = [
+  { file: '5_8 turkaksagi_120bpm.wav',  label: '5/8 Türk Aksağı' },
+  { file: '7_8 devrihindi_120bpm.wav',  label: '7/8 Devrihindî' },
+  { file: '8_8 duyek_120bpm.wav',       label: '8/8 Düyek' },
+  { file: '9_8 aksak_120bpm.wav',       label: '9/8 Aksak' },
+  { file: '10_8 aksaksemai_120bpm.wav', label: '10/8 Aksak Semai' }
+];
+const makam_files = makam_list.map(x => `../makams/${encodeURIComponent(x.file)}`);
+const aksak_files = aksak_list.map(x => `../aksak clicks/${encodeURIComponent(x.file)}`);
+
+/* ── Ön yükleme ── */
+const preload_all = {
+  type: jsPsychPreload,
+  audio: [...makam_files, ...aksak_files],
+  continue_after_error: true,
+  message: card(`<p style="font-size:1.15rem;font-weight:700;color:var(--a1)">🎵 Sesler yükleniyor, lütfen bekleyin…</p>`)
+};
+
+/* ── Eksen açıklama + pratik pad ── */
+const eksen_aciklama = {
+  type: jsPsychHtmlButtonResponse,
+  choices: ['Anladım, başlayalım! 🎵'],
+  stimulus: card(`
+    <div class="part-badge">🗺️ Nasıl Kullanacaksın?</div>
+    <div class="display" style="font-size:1.85rem">Kutucuğu Tanıyalım!</div>
+    <p class="lead">Her sesi dinledikten sonra karşına bir kutucuk çıkacak.<br>İçine <b>bir nokta</b> koyacaksın. Nokta iki şeyi birden anlatıyor:</p>
+
+    <div class="axis-grid">
+      <div class="axis-card valence">
+        <div class="ax-icon">↔️</div>
+        <div class="ax-title">Sol — Sağ Ekseni</div>
+        <div class="ax-body">
+          Bu ses kulağına hoş geldi mi?<br><br>
+          😟 <b>Sola</b> koy → "Hoş gelmedi"<br>
+          😍 <b>Sağa</b> koy → "Çok hoş geldi"
+        </div>
+      </div>
+      <div class="axis-card arousal">
+        <div class="ax-icon">↕️</div>
+        <div class="ax-title">Yukarı — Aşağı Ekseni</div>
+        <div class="ax-body">
+          Bu ses seni nasıl hissettirdi?<br><br>
+          😴 <b>Aşağı</b> koy → "Sakin hissettirdi"<br>
+          🥳 <b>Yukarı</b> koy → "Heyecanlandırdı"
+        </div>
+      </div>
+    </div>
+
+    <div class="practice-wrap">
+      <div class="pw-title">👇 Şimdi bir dene! Noktayı istediğin yere sürükle.</div>
+      <canvas id="practice-pad" width="480" height="290"></canvas>
+      <div id="practice-label"></div>
+    </div>
+
+    <div class="tip-box">
+      💡 Gerçek testte de aynı kutucuğu kullanacaksın.
+      Noktayı yerleştirip <b>Kaydet</b> butonuna basınca devam edilecek.
+    </div>
+  `),
+  on_load: () => {
+    requestAnimationFrame(() => {
+      const pad = document.getElementById('practice-pad');
+      if (!pad) return;
+      const ctx = pad.getContext('2d');
+      const W = pad.width, H = pad.height;
+      let x = W/2, y = H/2;
+
+      function draw() {
+        const gX = ctx.createLinearGradient(0,0,W,0);
+        gX.addColorStop(0,'#ff8a8a'); gX.addColorStop(0.5,'#ffe28a'); gX.addColorStop(1,'#b6f7b0');
+        const gY = ctx.createLinearGradient(0,H,0,0);
+        gY.addColorStop(0,'rgba(255,255,255,0.1)'); gY.addColorStop(1,'rgba(139,92,246,0.2)');
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle=gX; ctx.fillRect(0,0,W,H);
+        ctx.fillStyle=gY; ctx.fillRect(0,0,W,H);
+
+        ctx.strokeStyle='rgba(100,116,139,0.25)'; ctx.lineWidth=1;
+        for(let i=1;i<6;i++){const gx=W*i/6; ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke();}
+        for(let j=1;j<6;j++){const gy=H*j/6; ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke();}
+
+        ctx.strokeStyle='#1e293b'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(10,H/2); ctx.lineTo(W-22,H/2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(W-26,H/2-5); ctx.lineTo(W-10,H/2); ctx.lineTo(W-26,H/2+5); ctx.closePath(); ctx.fillStyle='#1e293b'; ctx.fill();
+        ctx.beginPath(); ctx.moveTo(W/2,H-10); ctx.lineTo(W/2,22); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(W/2-5,26); ctx.lineTo(W/2,10); ctx.lineTo(W/2+5,26); ctx.closePath(); ctx.fill();
+
+        function rr(rx,ry,rw,rh,r){
+          const cr=Math.min(r,rh/2,rw/2);
+          ctx.beginPath();
+          ctx.moveTo(rx+cr,ry); ctx.arcTo(rx+rw,ry,rx+rw,ry+rh,cr);
+          ctx.arcTo(rx+rw,ry+rh,rx,ry+rh,cr); ctx.arcTo(rx,ry+rh,rx,ry,cr);
+          ctx.arcTo(rx,ry,rx+rw,ry,cr); ctx.closePath();
+        }
+        function pill(text,px,py,fg,bg='rgba(255,255,255,0.9)'){
+          ctx.font='bold 14px Nunito,sans-serif';
+          const pw=ctx.measureText(text).width, ph=24, pp=10;
+          ctx.save(); ctx.shadowColor='rgba(0,0,0,0.1)'; ctx.shadowBlur=5;
+          rr(px,py,pw+pp*2,ph,12); ctx.fillStyle=bg; ctx.fill(); ctx.restore();
+          ctx.lineWidth=1; ctx.strokeStyle='rgba(0,0,0,0.07)';
+          rr(px,py,pw+pp*2,ph,12); ctx.stroke();
+          ctx.fillStyle=fg; ctx.fillText(text,px+pp,py+ph-7);
+        }
+
+        pill('😟 Hoş Gelmedi', 8, H/2-32, '#b91c1c');
+        const rt='😍 Hoş Geldi';
+        pill(rt, W-(ctx.measureText(rt).width+28), H/2-32, '#065f46');
+        const bt='😴 Sakin';
+        pill(bt, Math.round(W/2-(ctx.measureText(bt).width+20)/2), H-40, '#334155');
+        const tt='🥳 Heyecan Verici';
+        pill(tt, Math.round(W/2-(ctx.measureText(tt).width+20)/2), 8, '#7c3aed');
+
+        ctx.beginPath(); ctx.arc(x,y,14,0,Math.PI*2);
+        ctx.fillStyle='#3b82f6'; ctx.fill();
+        ctx.lineWidth=3; ctx.strokeStyle='#fff'; ctx.stroke();
+      }
+
+      function upd(ev){
+        const r=pad.getBoundingClientRect();
+        const px=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
+        const py=(ev.touches?ev.touches[0].clientY:ev.clientY)-r.top;
+        x=Math.max(0,Math.min(W,px)); y=Math.max(0,Math.min(H,py));
+        draw();
+        const vP=Math.round((x/W)*100), aP=Math.round((1-y/H)*100);
+        const vT=vP<35?'😟 Hoş gelmedi':vP>65?'😍 Hoş geldi':'😐 Orta';
+        const aT=aP<35?'😴 Sakin':aP>65?'🥳 Heyecan verici':'😶 Orta';
+        const lbl=document.getElementById('practice-label');
+        if(lbl) lbl.textContent=`${vT}  ·  ${aT}`;
+      }
+
+      draw();
+      pad.onmousedown=e=>{
+        upd(e);
+        const mv=ee=>upd(ee);
+        const up=()=>{window.removeEventListener('mousemove',mv);window.removeEventListener('mouseup',up);};
+        window.addEventListener('mousemove',mv); window.addEventListener('mouseup',up);
+      };
+      pad.ontouchstart=upd;
+      pad.ontouchmove=e=>{upd(e);e.preventDefault();};
+    });
+  },
+  on_finish: async () => {
+    try{ const c=jsPsych.pluginAPI.audioContext(); if(c&&c.state!=='running') await c.resume(); }catch(e){}
+  }
+};
+
+/* ── Ses çalma trial ── */
+function playAudioTrial(stimPath, extraData){
+  return {
+    type: jsPsychAudioButtonResponse,
+    stimulus: stimPath,
+    use_webaudio: false,
+    choices: [],
+    response_allowed_while_playing: false,
+    trial_ends_after_audio: true,
+    trial_duration: 20000,
+    prompt: card(`
+      <div class="audio-status">
+        <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
+        <span>🎧 Dikkatlice dinle / dinleyin…</span>
+      </div>
+    `),
+    on_load: () => {
+      const audioEl = document.querySelector('audio');
+      if(audioEl){
+        audioEl.onerror = ()=>console.warn('Ses hatası:', stimPath);
+        audioEl.volume = 1.0;
+        setTimeout(()=>{ audioEl.play().catch(()=>{}); }, 50);
+      }
+    },
+    data: extraData
+  };
+}
+
+/* ── 2B Değerlendirme pad ── */
+function rating2DTrial(extraData, trialIdx, total){
+  let valencePct = 50, arousalPct = 50;
+  const pct = Math.round((trialIdx / total) * 100);
+
+  return {
+    type: jsPsychHtmlButtonResponse,
+    choices: ['💾 Kaydet'],
+    stimulus: card(`
+      <div class="part-badge">${extraData.part==='makam'?'🎶 Makam':'🥁 Aksak'} — ${trialIdx+1} / ${total}</div>
+
+      <div class="progress-wrap">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+
+      <div class="pad-wrap">
+        <h3 style="font-family:'Righteous',cursive;font-size:1.25rem;color:var(--a1);margin-bottom:10px;">
+          🎯 Bu sesi iki ölçekte değerlendirin!
+        </h3>
+        <canvas id="rating-pad" width="600" height="360"></canvas>
+        <div class="pad-note">👆 Noktayı istediğin / istediğiniz yere sürükle, sonra <b>Kaydet</b>!</div>
+      </div>
+    `),
+    on_load: () => {
+      requestAnimationFrame(() => {
+        const pad = document.getElementById('rating-pad');
+        const ctx = pad.getContext('2d');
+        const W = pad.width, H = pad.height;
+        let x=W/2, y=H/2;
+
+        function draw(){
+          const gX = ctx.createLinearGradient(0,0,W,0);
+          gX.addColorStop(0,'#ff8a8a'); gX.addColorStop(0.5,'#ffe28a'); gX.addColorStop(1,'#b6f7b0');
+          const gY = ctx.createLinearGradient(0,H,0,0);
+          gY.addColorStop(0,'rgba(255,255,255,0.1)'); gY.addColorStop(1,'rgba(139,92,246,0.22)');
+          ctx.clearRect(0,0,W,H);
+          ctx.fillStyle=gX; ctx.fillRect(0,0,W,H);
+          ctx.fillStyle=gY; ctx.fillRect(0,0,W,H);
+
+          ctx.strokeStyle='rgba(100,116,139,0.2)'; ctx.lineWidth=1;
+          for(let i=1;i<6;i++){const gx=W*i/6; ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke();}
+          for(let j=1;j<6;j++){const gy=H*j/6; ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke();}
+
+          ctx.strokeStyle='#1e293b'; ctx.lineWidth=2;
+          ctx.beginPath(); ctx.moveTo(12,H/2); ctx.lineTo(W-26,H/2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(W-30,H/2-6); ctx.lineTo(W-12,H/2); ctx.lineTo(W-30,H/2+6); ctx.closePath(); ctx.fillStyle='#1e293b'; ctx.fill();
+          ctx.beginPath(); ctx.moveTo(W/2,H-12); ctx.lineTo(W/2,26); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(W/2-6,30); ctx.lineTo(W/2,12); ctx.lineTo(W/2+6,30); ctx.closePath(); ctx.fill();
+
+          function rr(rx,ry,rw,rh,r){
+            const cr=Math.min(r,rh/2,rw/2);
+            ctx.beginPath();
+            ctx.moveTo(rx+cr,ry); ctx.arcTo(rx+rw,ry,rx+rw,ry+rh,cr);
+            ctx.arcTo(rx+rw,ry+rh,rx,ry+rh,cr); ctx.arcTo(rx,ry+rh,rx,ry,cr);
+            ctx.arcTo(rx,ry,rx+rw,ry,cr); ctx.closePath();
+          }
+          function pill(text,px,py,fg,bg='rgba(255,255,255,0.92)'){
+            ctx.font='bold 16px Nunito,sans-serif';
+            const pw=ctx.measureText(text).width, ph=26, pp=12;
+            ctx.save(); ctx.shadowColor='rgba(0,0,0,0.12)'; ctx.shadowBlur=6;
+            rr(px,py,pw+pp*2,ph,13); ctx.fillStyle=bg; ctx.fill(); ctx.restore();
+            ctx.lineWidth=1; ctx.strokeStyle='rgba(0,0,0,0.07)';
+            rr(px,py,pw+pp*2,ph,13); ctx.stroke();
+            ctx.fillStyle=fg; ctx.fillText(text,px+pp,py+ph-8);
+          }
+
+          pill('😟 Kulağa Hoş Gelmedi', 14, H/2-38, '#b91c1c');
+          const rt='😍 Kulağa Hoş Geldi';
+          pill(rt, W-(ctx.measureText(rt).width+32), H/2-38, '#065f46');
+          const bt='😴 Sakin';
+          pill(bt, Math.round(W/2-(ctx.measureText(bt).width+24)/2), H-48, '#334155');
+          const tt='🥳 Heyecan Verici';
+          pill(tt, Math.round(W/2-(ctx.measureText(tt).width+24)/2), 12, '#7c3aed');
+
+          ctx.beginPath(); ctx.arc(x,y,13,0,Math.PI*2);
+          ctx.fillStyle='#fff'; ctx.fill();
+          ctx.lineWidth=3; ctx.strokeStyle='#3b82f6'; ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
+          ctx.fillStyle='#3b82f6'; ctx.fill();
+        }
+
+        function upd(ev){
+          const r=pad.getBoundingClientRect();
+          const px=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
+          const py=(ev.touches?ev.touches[0].clientY:ev.clientY)-r.top;
+          x=Math.max(0,Math.min(W,px)); y=Math.max(0,Math.min(H,py));
+          valencePct=Math.round((x/W)*100);
+          arousalPct=Math.round((1-y/H)*100);
+          draw();
+        }
+
+        draw();
+        pad.onmousedown=e=>{
+          upd(e);
+          const mv=ee=>upd(ee);
+          const up=()=>{window.removeEventListener('mousemove',mv);window.removeEventListener('mouseup',up);};
+          window.addEventListener('mousemove',mv); window.addEventListener('mouseup',up);
+        };
+        pad.ontouchstart=upd;
+        pad.ontouchmove=e=>{upd(e);e.preventDefault();};
+      });
+    },
+    on_finish: (d) => {
+      d.valence=valencePct; d.arousal=arousalPct;
+      d.valence_likert7=Number((valencePct/100*6).toFixed(2));
+      d.arousal_likert7=Number((arousalPct/100*6).toFixed(2));
+      Object.assign(d, extraData);
+    }
+  };
+}
+
+/* ── Bölüm giriş ekranları ── */
+const intro_makam = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: card(`
+    <div class="part-badge">🎶 Bölüm 1</div>
+    <div class="display">Makam Algısı</div>
+    <p class="lead">Şimdi Türk <b>makam</b> müziğinden melodik sesler duyacaksın / duyacaksınız.<br>
+    Her sesin ardından kutucuğu kullanarak ne kadar <b>hoş geldiğini</b> ve ne kadar <b>heyecan verici</b> hissettirdiğini göster! 🎨</p>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="ic-icon">🎼</div>
+        <div class="ic-title">8 makam</div>
+        <div class="ic-body">Her makamdan kısa bir melodi duyacaksın.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🎯</div>
+        <div class="ic-title">2B Değerlendirme</div>
+        <div class="ic-body">Her ses için noktayı kutucuğa yerleştir.</div>
+      </div>
+    </div>
+  `),
+  choices: ['🚀 Başla!'],
+  on_finish: async () => {
+    try{ const c=jsPsych.pluginAPI.audioContext(); if(c&&c.state!=='running') await c.resume(); }catch(e){}
+  }
+};
+
+const intro_aksak = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: card(`
+    <div class="part-badge">🥁 Bölüm 2</div>
+    <div class="display">Aksak Algısı</div>
+    <p class="lead">Bu bölümde asimetrik ritim kalıpları duyacaksın / duyacaksınız —<br>bunlara <b>aksak ritimler</b> diyoruz. Aynı kutucukla değerlendir! 🎯</p>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="ic-icon">🥁</div>
+        <div class="ic-title">5 aksak ritim</div>
+        <div class="ic-body">Farklı vuruş sayılı asimetrik ritimler.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🎯</div>
+        <div class="ic-title">2B Değerlendirme</div>
+        <div class="ic-body">Her ritim için noktayı kutucuğa yerleştir.</div>
+      </div>
+    </div>
+  `),
+  choices: ['🚀 Başla!'],
+  on_finish: async () => {
+    try{ const c=jsPsych.pluginAPI.audioContext(); if(c&&c.state!=='running') await c.resume(); }catch(e){}
+  }
+};
+
+const end_screen = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: card(`
+    <div style="font-size:3.5rem;margin-bottom:14px;">🎉</div>
+    <div class="display">Tebrikler, bitti!</div>
+    <p class="lead">Katıldığın / Katıldığınız için çok teşekkürler! 🙏<br>
+    Sonuçların bilgisayarına kaydedilecek.</p>
+    <div class="tip-box" style="text-align:center;">💾 Dosya otomatik olarak indirilecek.</div>
+  `),
+  choices: ['✅ Kapat']
+};
+
+/* ── Blok üretimi ── */
+function makeBlock_MAKAM(){
+  const arr=[];
+  const total = makam_list.length;
+  for(let i=0;i<total;i++){
+    const url=`../makams/${encodeURIComponent(makam_list[i].file)}`;
+    const name=makam_list[i].label;
+    arr.push(playAudioTrial(url, {part:'makam', label:name, index:i, stimulus_file:url}));
+    arr.push(rating2DTrial({part:'makam', label:name, index:i, stimulus_file:url}, i, total));
+  }
+  return arr;
+}
+function makeBlock_AKSAK(){
+  const arr=[];
+  const total = aksak_list.length;
+  for(let i=0;i<total;i++){
+    const url=`../aksak clicks/${encodeURIComponent(aksak_list[i].file)}`;
+    const name=aksak_list[i].label;
+    arr.push(playAudioTrial(url, {part:'aksak', label:name, index:i, stimulus_file:url}));
+    arr.push(rating2DTrial({part:'aksak', label:name, index:i, stimulus_file:url}, i, total));
+  }
+  return arr;
+}
+
+/* ── Çalıştır ── */
+jsPsych.run([
+  intake,
+  preload_all,
+  eksen_aciklama,
+  intro_makam, ...makeBlock_MAKAM(),
+  intro_aksak, ...makeBlock_AKSAK(),
+  end_screen
+]);
+</script>
+</body>
+</html>
