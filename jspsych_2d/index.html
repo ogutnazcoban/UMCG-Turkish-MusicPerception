@@ -495,7 +495,7 @@ const eksen_aciklama = {
         <div class="ax-body">
           Bu ses seni nasıl hissettirdi?<br><br>
           😴 <b>Aşağı</b> koy → "Sakin hissettirdi"<br>
-          🥳 <b>Yukarı</b> koy → "Heyecanlandırdı"
+          💃 <b>Yukarı</b> koy → "Heyecanlandırdı"
         </div>
       </div>
     </div>
@@ -560,7 +560,7 @@ const eksen_aciklama = {
         pill(rt, W-(ctx.measureText(rt).width+28), H/2-32, '#065f46');
         const bt='😴 Sakin';
         pill(bt, Math.round(W/2-(ctx.measureText(bt).width+20)/2), H-40, '#334155');
-        const tt='🥳 Heyecan Verici';
+        const tt='💃 Heyecan Verici';
         pill(tt, Math.round(W/2-(ctx.measureText(tt).width+20)/2), 8, '#7c3aed');
 
         ctx.beginPath(); ctx.arc(x,y,14,0,Math.PI*2);
@@ -576,7 +576,7 @@ const eksen_aciklama = {
         draw();
         const vP=Math.round((x/W)*100), aP=Math.round((1-y/H)*100);
         const vT=vP<35?'😟 Hoş gelmedi':vP>65?'😍 Hoş geldi':'😐 Orta';
-        const aT=aP<35?'😴 Sakin':aP>65?'🥳 Heyecan verici':'😶 Orta';
+        const aT=aP<35?'😴 Sakin':aP>65?'💃 Heyecan verici':'😶 Orta';
         const lbl=document.getElementById('practice-label');
         if(lbl) lbl.textContent=`${vT}  ·  ${aT}`;
       }
@@ -696,7 +696,7 @@ function rating2DTrial(extraData, trialIdx, total){
           pill(rt, W-(ctx.measureText(rt).width+32), H/2-38, '#065f46');
           const bt='😴 Sakin';
           pill(bt, Math.round(W/2-(ctx.measureText(bt).width+24)/2), H-48, '#334155');
-          const tt='🥳 Heyecan Verici';
+          const tt='💃 Heyecan Verici';
           pill(tt, Math.round(W/2-(ctx.measureText(tt).width+24)/2), 12, '#7c3aed');
 
           ctx.beginPath(); ctx.arc(x,y,13,0,Math.PI*2);
